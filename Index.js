@@ -1,3 +1,4 @@
+require("dotenv").config();
 // we are creating a API
 //FrameWork Express
 const express = require("express");
@@ -9,14 +10,14 @@ const Mauli = express();
 //configuration
 Mauli.use(express.json());
 //Established the database(mangoDB)
-mongoose.connect("mongodb+srv://Pranjal:database1@database1.p1slq.mongodb.net/Booky?retryWrites=true&w=majority" , {
+mongoose.connect(process.env.MONGO_URL , {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
   useCreateIndex: true,
 }
 )
-.then(() => console.log("connection is established!!!"));
+.then(() => console.log("connection is established!!!😤😤😤"));
 
 
 /*
