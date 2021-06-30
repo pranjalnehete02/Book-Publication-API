@@ -8,7 +8,15 @@ const database = require("./database/index");
 const Mauli = express();
 //configuration
 Mauli.use(express.json());
-   
+//Established the database(mangoDB)
+mongoose.connect("mongodb+srv://Pranjal:database1@database1.p1slq.mongodb.net/Booky?retryWrites=true&w=majority" , {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
+}
+)
+.then(() => console.log("connection is established!!!"));
 
 
 /*
