@@ -5,6 +5,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 //Database(importating The database file)
 const database = require("./database/index");
+
+//Models
+const BookModels = require("./database/book");
+const AuthorModel = require("./database/author");
+const PublicationModel = require("./database/publication");
+const BookModel = require("./database/book");
 //Initializing
 const Mauli = express();
 //configuration
@@ -28,7 +34,8 @@ Parameters      None
 Method          GET
 */
 
-Mauli.get("/" , (req, res) => {
+Mauli.get("/" , async (req, res) => {
+    const getAllBooks = await BookModel.find();
     return res.json({ books: database.books});
 })
 
@@ -44,10 +51,10 @@ Access          Public
 Parameters      ISBN
 Method          GET
 */
-Mauli.get("/is/:ISBN", (req,res) => {
-    const getSpecificBook = database.books.filter((book) => book.ISBN === req.param.ISBN);
+Mauli.get("/is/:ISBN", async (req,res) => {
+    const getSpecificBook = await BookModel.findOne({ ISBN: req.params.isbn });
     //to check arewe getting the right ISBN number or not we USE LEGTH
-    if (getSpecificBook.length === 0 ){
+    if (!getSpecificBook ){
         return res.json({error:`No book found for the ISBN of ${req.param.ISBN}`,})
     }
 
@@ -64,9 +71,9 @@ Access          Public
 Parameters      category
 Method          GET
 */
-Mauli.get("/category/:category",(req,res) => {
-    const getSpecificBooks = database.books.filter((book) => book.category.includes(req.params.category));
-    if (getSpecificBook.length === 0 ){
+Mauli.get("/category/:category",async (req,res) => {
+    const getSpecificBooks = await BookModel.findOne({category: req.params.category})
+    if (!getSpecificBook){
         return res.json({error:`No book found for the category of ${req.param.category}`,});
     }
 
@@ -84,8 +91,9 @@ Access          Public
 Parameters      NONE
 Method          GET
 */
-Mauli.get('/authors', (req, res) => {
-    return res.json({ authors: database.authors});
+Mauli.get('/authors', async (req, res) => {
+    const getAllAuthors = await AuthorModel.find();
+    return res.json({ authors: getAllAuthors});
 });
 
 
@@ -94,16 +102,6 @@ Mauli.get('/authors', (req, res) => {
 
 
 
-/*
-Route           /authors
-Description     get all authors
-Access          Public
-Parameters      NONE
-Method          GET
-*/
-Mauli.get('/authors', (req, res) => {
-    return res.json({ authors: database.authors});
-});
 
 
 
@@ -141,7 +139,7 @@ Mauli.get("/publications", (req,res) => {
 
 
 
-
+  
 
 /*
 Route           /book/new
@@ -150,13 +148,13 @@ Access          Public
 Parameters      NONE 
 Method          POST
 */
-Mauli.post("/book/new", (req, res) => {
+Mauli.post("/book/new", async (req, res) => {
     const { newBook } = req.body;
 
-    database.books.push(newBook);
+    const addNewBook = BookModel.create(newBook);
 
 
-    return res.json({ books: database.books, message: "book was added!!" })
+    return res.json({  message: "book was added!!" })
 });
 
 
@@ -164,18 +162,18 @@ Mauli.post("/book/new", (req, res) => {
 
 /*
 Route           /author/new
-Description     Add new books
+Description     Add new author
 Access          Public
 Parameters      NONE 
 Method          POST
 */
 Mauli.post("/author/new", (req, res) => {
-    const { neauthork } = req.body;
+    const { newAuthor } = req.body;
 
-    database.authors.push(neauthork);
+    AuthorModel.create(newAuthor); 
 
 
-    return res.json({ books: database.authors, message: "author was added!!" })
+    return res.json({  message: "author was added!!" })
 });
 
 
